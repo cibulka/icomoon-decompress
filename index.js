@@ -10,7 +10,9 @@ const parseSelection = (selection) => {
 		const { name } = icon.properties;
 		const { paths, width } = icon.icon;
 
-		result[name] = { paths, width };
+		const key = name.split(',')[0];
+
+		result[key] = { paths, width };
 	});
 
 	return result;
