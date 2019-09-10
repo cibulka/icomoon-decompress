@@ -2,6 +2,30 @@ const fs = require('fs');
 const rimraf = require('rimraf');
 const unzipper = require('unzipper');
 
+// =============================================================================
+// Paths
+// =============================================================================
+
+const paths = {
+	archive: 'icomoon.zip',
+	build: 'selection.build.json',
+	src: 'selection.json',
+	tmp: 'tmp',
+};
+
+const getPath = (type) => {
+	const dir = process.argv[2] || __dirname;
+	return `${dir}/${paths[type]}`;
+}
+
+Object.keys(paths).forEach(type => {
+	paths[type] = getPath(type);
+});
+
+// =============================================================================
+// Utils
+// =============================================================================
+
 const parseSelection = (selection) => {
 	const result = {};
 	const { icons } = selection;
@@ -18,24 +42,38 @@ const parseSelection = (selection) => {
 	return result;
 };
 
-const getPath = (subPath) => {
-	const dir = process.argv[2] || __dirname;
-	console.log(`${dir}/${subPath}`);
-	return `${dir}/${subPath}`;
-}
+const printMessage = (msg, isOk) => {
+	if (isOk) {
+		console.log('\x1b[32m%s\x1b[0m', msg);
+	} else {
+		console.warn('\x1b[31m%s\x1b[0m', msg);
+	}
+};
 
-fs.createReadStream(getPath('icomoon.zip'))
+// =============================================================================
+// Script
+// =============================================================================
+
+fs.createReadStream(paths.archive)
+	.on('error', (err) => {
+		if (err.code === 'ENOENT') {
+			printMessage(`No icomoon archive on path ${paths.archive}`);
+		} else {
+			console.warn(err);
+			printMessage('Unknown error');
+		}
+	})
 	.pipe(unzipper.Parse())
 	.on('entry', async entry => {
 		if (entry.path === 'selection.json') {
 			const content = await entry.buffer();
 			const selection = JSON.parse(content.toString());
 			const parsed = parseSelection(selection);
-			fs.writeFile(getPath('selection.build.json'), JSON.stringify(parsed, null, 2), function() {
-				fs.unlinkSync(getPath('icomoon.zip'));
-				fs.writeFile(getPath('selection.json'), JSON.stringify(selection, null, 2), function() {
-					rimraf(getPath('tmp'), function() {
-						console.log(`<<< Selection built [${Object.values(parsed).length}].`);
+			fs.writeFile(paths.build, JSON.stringify(parsed, null, 2), function() {
+				fs.unlinkSync(paths.archive);
+				fs.writeFile(paths.src, JSON.stringify(selection, null, 2), function() {
+					rimraf(paths.tmp, function() {
+						printMessage(`${Object.values(parsed).length} icons.`, true);
 					});
 				});
 			});
