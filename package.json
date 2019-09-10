@@ -1,0 +1,26 @@
+{
+  "name": "icomoon-decompress",
+  "version": "0.0.1",
+  "description": "Dead-simple module do unzip icomoon archive and compress its selection.json.",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cibulka/icomoon-decompress.git"
+  },
+  "keywords": [
+    "icomoon"
+  ],
+  "author": "Petr Cibulka <cibulka.me@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/cibulka/icomoon-decompress/issues"
+  },
+  "homepage": "https://github.com/cibulka/icomoon-decompress#readme",
+  "dependencies": {
+    "rimraf": "^3.0.0",
+    "unzipper": "^0.10.5"
+  }
+}
