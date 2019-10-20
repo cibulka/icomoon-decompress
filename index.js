@@ -28,9 +28,11 @@ Object.keys(paths).forEach(type => {
 
 const sortObject = (obj) => {
     const result = {};
-    Object.keys(obj).sort(key => {
+    const keys = Object.keys(obj).sort();
+    keys.forEach(key => {
         result[key] = obj[key];
     });
+    console.log(keys);
     return result;
 }
 
