@@ -1,6 +1,6 @@
 {
   "name": "icomoon-decompress",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Dead-simple module do unzip icomoon archive and compress its selection.json.",
   "main": "index.js",
   "scripts": {
